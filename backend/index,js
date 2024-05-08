@@ -1,8 +1,0 @@
-const express = require('express');
-
-// Constanrts
-const PORT = 8080;
-const HOST = '0.0.0.0'
-
-// APP
-
