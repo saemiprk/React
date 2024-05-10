@@ -20,14 +20,24 @@ mongoose.connect(process.env.MONGO_URI)
         console.error(err)
     })
 
-app.get('/', (req, res) => {
-    res.send('안녕하세요.222')
+app.get('/', (req, res, next) => {
+    // res.send('안녕하세요.222')
+    // throw new Error('It is an error')
+    // 비동기 실행 시
+    setImmediate(() => {next(new Error('It is an error'))})
 })
 
 app.post('/', (req, res) => {
     console.log(req.body);
     res.json(req.body)
 })
+
+app.use((error, req, res, next) => {
+    res.status(err.status || 500)
+    res.send(error.message || '서버에서 에러가 났습니다.')
+})
+
+app.use('/users', require('./routes/users'))
 
 app.listen(port, () => {
     console.log(`${port}번에서 실행이 되었습니다.`);
