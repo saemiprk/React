@@ -13,4 +13,14 @@ router.post('/register', async (req, res, next) => {
     }
 })
 
+router.post('/login', async (req, res, next) => {
+    try {
+
+        const user = await 
+
+    } catch (error) {
+        next(error)
+    }
+})
+
 module.exports = router

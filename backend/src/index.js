@@ -21,7 +21,6 @@ mongoose.connect(process.env.MONGO_URI)
     })
 
 app.get('/', (req, res, next) => {
-    // res.send('안녕하세요.222')
     // throw new Error('It is an error')
     // 비동기 실행 시
     setImmediate(() => {next(new Error('It is an error'))})
