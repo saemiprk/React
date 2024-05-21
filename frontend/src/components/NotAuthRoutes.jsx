@@ -1,9 +1,10 @@
 import React from 'react'
+import { Navigate, Outlet } from 'react-router-dom'
 
-const notAuthRoutes = () => {
+const NotAuthRoutes = ({ isAuth }) => {
   return (
-    <div>notAuthRoutes</div>
+    isAuth ? <Navigate to={'/'} /> : <Outlet />
   )
 }
 
-export default notAuthRoutes
+export default NotAuthRoutes
