@@ -37,6 +37,7 @@ app.use((error, req, res, next) => {
 })
 
 app.use('/users', require('./routes/users'))
+app.use('/products', require("./routes/products"))
 
 app.listen(port, () => {
     console.log(`${port}번에서 실행이 되었습니다.`);

@@ -4,6 +4,10 @@ import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ProtectedPage from './pages/ProtectedPage'
+import UploadProductPage from './pages/UploadProductPage'
+import DetailProductPage from './pages/DetailProductPage'
+import HistoryPage from './pages/HistoryPage'
+import CartPage from './pages/CartPage'
 import Navbar from './layout/Navbar'
 import Footer from './layout/Footer'
 import { ToastContainer } from 'react-toastify'
@@ -48,6 +52,10 @@ function App() {
       {/* 로그인 했을 경우 */}
       <Route element={<ProtectedRoutes isAuth={isAuth} />}>
         <Route path="/protected" element={<ProtectedPage />} />
+        <Route path="/product/upload" element={<UploadProductPage />} />
+        <Route path="/product/:productId" element={<DetailProductPage />} />
+        <Route path="/user/cart" element={<CartPage />} />
+        <Route path="/history" element={<HistoryPage />} />
       </Route>
 
       {/* 로그인 하지 않았을 경우 */}

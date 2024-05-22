@@ -9,6 +9,8 @@ const initialState = {
         name: '',
         role: '',
         image: '',
+        cart: '',
+        history: '',
     },
     isAuth: false,
     isLoading: false,
