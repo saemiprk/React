@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
-import { userSelector } from 'react-redux'
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux'
 import axiosInstance from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
-
-const [product, setProduct] = useState({
-    title: '',
-    description: '',
-    price: 0,
-    continents: 1,
-    images: []
-})
+import FileUpload from '../../components/FileUpload';
 
 const UploadProductPage = () => {
-    const userData = userSelector(state => state.user?.userData);
+    const [product, setProduct] = useState({
+        title: '',
+        description: '',
+        price: 0,
+        continents: 1,
+        images: []
+    })
+
+    const userData = useSelector(state => state.user?.userData);
     const navigate = useNavigate();
 
     const handleChange = (event) => {
@@ -28,12 +29,8 @@ const UploadProductPage = () => {
 
         const { title, desciption, price, continents, images } = product;
         const body = {
-            writer: userData.user._id,
-            title,
-            desciption,
-            price,
-            continents,
-            images,
+            writer: userData.id,
+            ...product
         }
         try{
             await axiosInstance.post('/products', body);
@@ -41,6 +38,13 @@ const UploadProductPage = () => {
         } catch (error) {
             console.error(error);
         }
+    }
+
+    const handleImages = (newImages) => {
+        setProduct((prevState) => ({
+            ...prevState,
+            images: newImages
+        }))
     }
 
     const continents = [
@@ -56,10 +60,11 @@ const UploadProductPage = () => {
     return (
         <section>
             <div className="text-center m-7">
-                <h1>예상 상품 업로드</h1>
+                <h1>여행 상품 업로드</h1>
             </div>
 
             <form className="mt-6" onSubmit={handleSubmit}>
+                <FileUpload images={product.images} onImageChange={handleImages} />
                 <div className="mt-4">
                     <label htmlFor="title">이름</label>
                     <input className="w-full px-4 py-2 bg-white border rounded-mb" name="title" id="title" onChange={handleChange} value={product.title} />
