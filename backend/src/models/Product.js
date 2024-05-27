@@ -9,12 +9,10 @@ const productSchema = mongoose.Schema({
         type: String,
         maxLength: 30
     },
-    description: {
-        type: String,
-        price: {
-            type: Number.EPSILON,
-            default: 0
-        }
+    description: String,
+    price: {
+        type: Number,
+        default: 0
     },
     images: {
         type: Array,
@@ -31,6 +29,16 @@ const productSchema = mongoose.Schema({
     views: {
         type: Number,
         default: 0
+    }
+})
+
+productSchema.index({
+    title: 'text',
+    description: 'text'
+},{
+    weights: {
+        title: 5,
+        desciption: 1,
     }
 })
 

@@ -18,7 +18,8 @@ const CheckBox = ({ continents, checkedContinents, onFilters}) => {
         <div className='p-2 mb-3 bg-gray-100 rounded-md'>
             {continents?.map(continent => (
                 <div key={continent._id}>
-                    <input type='checkbox' onChange={() => handleToggle(continent._id)} />
+                    <input type='checkbox' onChange={() => handleToggle(continent._id)} checked={checkedContinents.indexOf(continent._id) === -1 ? false : true} />
+                    {" "}
                     <lable>{continent.name}</lable>
                 </div>
             ))}
