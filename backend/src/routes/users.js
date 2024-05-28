@@ -1,8 +1,11 @@
 const express = require('express')
 const User = require('../models/User')
+const Product = require('../models/Product')
+const Payment = require('../models/Payment')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const { auth } = require("../middleware/auth")
+const async = require('async')
 
 router.get('/auth', auth, async (req, res, next) => {
     
@@ -66,11 +69,9 @@ router.post('/logout', auth, async (req, res, next) => {
 
 router.post('/cart', auth, async (req, res, next) => {
     try {
-
-        // 먼저 User Collection에 해당 유저의 정보를 가져오기 
         const userInfo = await User.findOne({ _id: req.user._id })
 
-        // 가져온 정보에서 카트에다 넣으려 하는 상품이 이미 들어 있는지 확인
+        // 중복 체크
         let duplicate = false;
         userInfo.cart.forEach((item) => {
             if (item.id === req.body.productId) {
@@ -78,7 +79,6 @@ router.post('/cart', auth, async (req, res, next) => {
             }
         })
 
-        // 상품이 이미 있을 때
         if (duplicate) {
             const user = await User.findOneAndUpdate(
                 { _id: req.user._id, "cart.id": req.body.productId },
@@ -87,9 +87,7 @@ router.post('/cart', auth, async (req, res, next) => {
             )
 
             return res.status(201).send(user.cart);
-        }
-        // 상품이 이미 있지 않을 때
-        else {
+        } else {
             const user = await User.findOneAndUpdate(
                 { _id: req.user._id },
                 {
@@ -113,6 +111,91 @@ router.post('/cart', auth, async (req, res, next) => {
     }
 })
 
+router.delete('/cart', auth, async (req, res) => {
+    
+    try {
+        const userInfo = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            {
+                "$pull":
+                { "cart": { "id": req.query.productId } }
+            },
+            { new: true }
+        )
+
+        const cart = userInfo.cart;
+        const array = cart.map(item => {
+            return item.id
+        })
+
+        const productInfo = await Product
+            .find({ _id: { $in: array } })
+            .populate('writer')
+
+        return res.json({
+            productInfo,
+            cart
+        })
+
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/payment', auth, async (req, res) => {
+ 
+    let history = [];
+    let transactionData = {};
+
+    req.body.cartDetail.forEach((item) => {
+        history.push({
+            dataOfPurchase: new Date().toISOString(),
+            name: item.title,
+            id: item._id,
+            price: item.price,
+            quantity: item.quantity,
+            paymentId: crypto.randomUUID()
+        })
+    })
+    transactionData.user = {
+        id: req.user._id,
+        name: req.user.name,
+        eamil: req.user.email
+    }
+
+    transactionData.product = history;
+
+    // User
+    await User.findOneAndUpdate(
+        { _id: req.user._id },
+        { $push: { history: { $each: history } }, $set: { cart: [] } },
+    )
+
+    // Payment
+    const payment = new Payment(transactionData);
+    const paymentDocs = await payment.save();
+
+    let products = [];
+    paymentDocs.product.forEach(item => {
+        products.push({ id: item.id, quantity: item.quantity })
+    })
+
+    async.eachSeries(products, async (item) => {
+        await Product.updateOne(
+            { _id: item.id},
+            {
+                $inc: {
+                    "sold": item.quantity
+                }
+            }
+        )
+    },
+    (err) => {
+        if(err) return res.status(500).send(err)
+        return res.sendStatus(200)
+    })
+
+})
 
 
 module.exports = router

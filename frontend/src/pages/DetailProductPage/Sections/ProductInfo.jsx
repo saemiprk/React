@@ -18,7 +18,7 @@ const ProductInfo = ({ product }) => {
             </ul>
 
             <div className='mt-3'>
-                <button className='w-full px-4 text-white duration-200 transform bg-black rounded-md hover:bg-gray-700' onClick={handleClick}>장바구니로</button>
+                <button className='w-full px-4 text-white duration-200 transform bg-black rounded-md hover:bg-gray-700' onClick={handleClick}>장바구니에 추가</button>
             </div>
         </div>
     )
