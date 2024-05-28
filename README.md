@@ -1,7 +1,5 @@
-# React + Vite
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 여행 상품 사이트
+여행 상품 사이트 입니다.
+회원가입/로그인/로그아웃, 업로드, 장바구니, 주문목록 페이지로 구성 되어 있습니다.
 
-Currently, two official plugins are available:
-
-+ @vitejs/plugin-react uses Babel for Fast Refresh
-+ @vitejs/plugin-react-swc uses SWC for Fast Refresh
+# React 라이브러리
