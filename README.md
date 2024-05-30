@@ -9,3 +9,7 @@
 + Redux Persist
 + TailWindCSS
 + React Toast
++ React Drop Zone
++ React icons
++ React Image Gallery
++ React Responsive Carousel
